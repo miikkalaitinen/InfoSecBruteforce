@@ -3,6 +3,10 @@ import pandas as pd
 from itertools import product
 
 df = pd.read_csv('hashes.csv').drop("Unnamed: 0", axis=1)
+start = int(input(f"Starting row (0 for first):"))
+upperlimit = int(input(f"Upper limit:"))
+df = df.iloc[start: , :]
+
 
 def hash(password, salt):
     i = f"potPlantSalt{password}{salt}"
@@ -12,7 +16,7 @@ def hash(password, salt):
 def crack(salt, real, user):
     attempts = 0
     chars = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9"," ","!","?",".",",","*","_","-"]
-    for password_length in range(1, 9):
+    for password_length in range(1, upperlimit):
         print(password_length)
         for guess in product(chars, repeat=password_length):
             attempts += 1
