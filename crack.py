@@ -1,10 +1,11 @@
 import hashlib
+from xmlrpc.client import boolean
 import pandas as pd
 from itertools import product
 
 df = pd.read_csv('hashes.csv').drop("Unnamed: 0", axis=1)
-start = int(input(f"Starting row (0 for first):"))
-upperlimit = int(input(f"Upper limit:"))
+start = int(input("Starting row (0 for first):"))
+upperlimit = int(input("Upper limit:"))
 df = df.iloc[start: , :]
 
 
@@ -27,13 +28,7 @@ def crack(salt, real, user):
                 f.close()
                 return 'password is {} for user {}. found in {} guesses.'.format(guess, user, attempts)
 
-found = False
 for index, row in df.iterrows():
-    while found == False:
-        user = row["User"]
-        username = input(f"Continue with user {user} (y/n):")
-        if(username == "y"):
-            crack(row["Salt"],row["Password"], user)
-        else:
-            print("Ending script")
-            found = True
+    user = row["User"]
+    print(f"Now cracking {user}")
+    crack(row["Salt"],row["Password"], user)
