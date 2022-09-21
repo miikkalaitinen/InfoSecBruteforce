@@ -2,11 +2,13 @@ import hashlib
 from xmlrpc.client import boolean
 import pandas as pd
 from itertools import product
+from random import shuffle
 
 df = pd.read_csv('hashes.csv').drop("Unnamed: 0", axis=1)
 start = int(input("Starting row (0 for first):"))
 lowerlimit = int(input("Starting lenght:"))
 upperlimit = int(input("Upper limit:"))
+useShuffle = input("Shuffle list before starting? (y/n):")
 df = df.iloc[start: , :]
 set = (input("Select set: \nlowerase=1\nuppercase=2\nnumbers=3\nspecial=4\n\nAnswer as cobination as string e.g. 123: "))
 res = [int(x) for x in str(set)]
@@ -32,7 +34,13 @@ def hash(password, salt):
 def crack(salt, real, user):
     for password_length in range(lowerlimit, upperlimit):
         print(password_length)
-        for guess in product(chars, repeat=password_length):
+        
+        guesses = list(product(chars, repeat=password_length))
+
+        if useShuffle == "y":
+            shuffle(guesses)
+
+        for guess in guesses:
             guess = ''.join(guess)
             if hash(guess, salt) == real:
                 f = open("found.txt", "a")
