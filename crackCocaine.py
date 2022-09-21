@@ -7,6 +7,7 @@ df = pd.read_csv('hashes.csv').drop("Unnamed: 0", axis=1)
 start = int(input("Starting row (0 for first):"))
 lowerlimit = int(input("Starting lenght:"))
 upperlimit = int(input("Upper limit:"))
+amountofnumbers = int(input("Amount of suffix numbers: "))
 df = df.iloc[start: , :]
 set = (input("Select set: \nlowerase=1\nuppercase=2\nnumbers=3\nspecial=4\n\nAnswer as cobination as string e.g. 123: "))
 res = [int(x) for x in str(set)]
@@ -37,7 +38,7 @@ def crack(salt, real, user):
             big = "".join(big)
             for guess in product(chars, repeat=password_length):
                 str = ''.join(guess)
-                for num in product(numsAndSpecial, repeat=1):
+                for num in product(numsAndSpecial, repeat=amountofnumbers):
                     num = ''.join(num)
                     guess = big + str + num
                     if hash(guess, salt) == real:
