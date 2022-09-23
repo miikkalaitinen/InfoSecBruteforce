@@ -9,7 +9,7 @@ def hash(password, salt):
     h = hashlib.sha256(i.encode('utf-8')).hexdigest()
     return h[0:32]
 
-counter = 0
+
 print(hash("testi", "asd"))
 
 def crack(password):
@@ -22,9 +22,7 @@ def crack(password):
           f.write('password is {} for user {}. \n'.format(password, u))
           f.close()
           print(f"User: {u}, Password: {password}")
-        counter =+ 1
-        if counter%10000 == 0:
-          print(f"{counter} passwords processed")
+        
 
 lines = []
 with open("rockyou.txt") as f:
@@ -32,7 +30,13 @@ with open("rockyou.txt") as f:
 lines = lines[starting:-1]
 print(lines[0:5])
 
+counter = 0
+
 for line in lines:
+  lenght = len(lines)
   crack(line)
+  counter += 1
+  if counter%10000 == 0:
+    print(f"{counter} passwords processed, {lenght-counter} to go. Progress {round((counter)/lenght*100,3)}%")
 
 print("Ended")
