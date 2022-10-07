@@ -41,18 +41,19 @@ print(user)
 while overwrittenkey:
   overwrittenkey.pop()
   print("Real key ", realkey)
-  print("Overwritten key ", overwrittenkey, "\n")
+  print("Overwritten key: ", ''.join(overwrittenkey), ". Overridden characters: ", len(overwrittenkey), "\n")
   found = False
+  newcommand = fr"{command}{''.join(overwrittenkey)}"
+  print("New command is", newcommand,"With lenght", len(newcommand))
   for char in chars:
     if not found:
       guess = fr"{''.join(overwrittenkey)}{char}{''.join(realkey)}"
       #print("Guess: ", guess, ", Char: ", char , "Commandkey: ", ''.join(overwrittenkey))
       #go = input("Next? \n")
-      message = fr"ClientCmd|{user}|{command}{''.join(overwrittenkey)}"
+      message = fr"ClientCmd|{user}|{newcommand}"
       hash = hmac.new(guess.encode("utf8"), message.encode("utf8"), hashlib.sha256)
       signature = hash.hexdigest()
-
-      test = f"{user};{command}{''.join(overwrittenkey)};{signature}\n"
+      test = f"{user};{newcommand};{signature}\n"
       tn = telnetlib.Telnet()
       tn.open("device1.vikaa.fi",port)
       tn.write(test.encode("utf8"))
