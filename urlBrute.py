@@ -12,14 +12,14 @@ print(r.status_code)
 chars = []
 chars += ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 chars += ["1","2","3","4","5","6","7","8","9","0"]
-nums = ["1","2","3","4","5","6","7","8","9","0", "a"]
+hexa = ["1","2","3","4","5","6","7","8","9","0", "a", "b", "c", "d", "e", "f"]
 
-first = ["c","d","e","f","g","h"]
+first = ["e","f","d"]
 for fs in product(first, repeat=1):
     f = "".join(fs)
-    for guess in product(nums, repeat=3):
+    for guess in product(hexa, repeat=3):
         str = ''.join(guess)
-        for num in product(nums, repeat=2):
+        for num in product(hexa, repeat=2):
             lsdgfg = ''.join(num)
             get = "http://cdn1.vikaa.fi:52645/photos/0421ed56/8131b1005f7e" + f + str + "ffff010b000034"+ lsdgfg + ".png"
             print(get)
